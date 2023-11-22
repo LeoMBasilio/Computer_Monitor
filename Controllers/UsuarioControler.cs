@@ -1,7 +1,7 @@
 ﻿using Computer_Monitor.Models;
+
 using Newtonsoft.Json;
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Computer_Monitor.Controllers
@@ -29,28 +29,19 @@ namespace Computer_Monitor.Controllers
 
         private async Task<bool> GetUsers(Usuarios usuarios)
         {
-            string ApiUrl = "http://localhost:5000/api/usuarios";
-            HttpClient client = new HttpClient();
+            string apiUrl = "http://localhost:5000/api/usuarios";
 
-            string jsonContent = JsonConvert.SerializeObject(usuarios);
+            Utils.RequestsApi requestsApi = new Utils.RequestsApi();
 
-            var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+            var user = JsonConvert.DeserializeObject<Usuarios>(await requestsApi.ApiPost(usuarios, apiUrl));
 
-            HttpResponseMessage response = await client.PostAsync(ApiUrl, content);
-
-            if (response.IsSuccessStatusCode)
+            if (user.usuario == usuarios.usuario && user.session != usuarios.session)
             {
-                string json = response.Content.ReadAsStringAsync().Result;
-
-                var user = JsonConvert.DeserializeObject<Usuarios>(json);
-
-                if (user.usuario == usuarios.usuario && user.session != usuarios.session)
-                {
-                    return true;
-                }
-                return false;
+                usuarios.session = true;
+                return true;
             }
             return false;
+
 
         }
 

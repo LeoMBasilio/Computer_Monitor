@@ -1,6 +1,5 @@
 ﻿using Computer_Monitor.Controllers;
-using Windows.UI.Notifications;
-using Windows.UI.ViewManagement;
+
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 // O modelo de item de Página em Branco está documentado em https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x416
@@ -25,18 +24,14 @@ namespace Computer_Monitor
 
             if (true)
             {
-                var ToastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
-                var ToastText = ToastXml.GetElementsByTagName("text");
-                ToastText[0].AppendChild(ToastXml.CreateTextNode("Login efetuado com sucesso!"));
+                Utils.Notify notify = new Utils.Notify();
 
-                var Toast = new ToastNotification(ToastXml);
-                ToastNotificationManager.CreateToastNotifier().Show(Toast);
+                //notify.Notificacao("Login efetuado com sucesso!");
 
-                ApplicationView view = ApplicationView.GetForCurrentView();
-                if (view.IsViewModeSupported(ApplicationViewMode.CompactOverlay))
-                {
-                    view.TryEnterViewModeAsync(ApplicationViewMode.CompactOverlay);
-                }
+                //add uma forma de minimizar a janela
+
+                TaskController taskController = new TaskController();
+                await taskController.TaskPool();
             }
         }
     }
